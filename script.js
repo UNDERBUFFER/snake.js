@@ -13,6 +13,24 @@ const randomInteger = (min, max) => {
     return Math.round(rand);
 }
 
+const paint = () => {
+    console.log(snake)
+    const oldElements = document.getElementsByClassName('block2')
+    for (let element of oldElements) {
+        // todo: добавить исключение для будущего фрукта
+        div.removeChild(element)
+    }
+
+    for (let block of snake) {
+        const innerDiv = document.createElement('div')
+        innerDiv.className = 'block2'
+        innerDiv.style.background = 'red'
+        innerDiv.style.marginLeft = `${block[0]}px`
+        innerDiv.style.marginTop = `${block[1]}px`
+        div.appendChild(innerDiv)
+    }
+}
+
 Array.prototype.rotate = function() {
     let res = this.slice(1)
     res.push(...this.slice(0, 1))
@@ -42,7 +60,7 @@ document.addEventListener('keydown', (event) => {
             break;
         case 'ArrowLeft':
             if ((x - FIGURE_X) < 0)
-                x = MAP_Y - FIGURE_X
+                x = MAP_X - FIGURE_X
             else
                 x -= FIGURE_X
             break;
@@ -55,15 +73,6 @@ document.addEventListener('keydown', (event) => {
     }
     snake = snake.rotate()
     snake[0] = [x, y]
-    console.log(snake[0])
+    // console.log(snake[0])
+    paint()
 })
-
-for (let block of snake) {
-    const innerDiv = document.createElement('div')
-    innerDiv.className = 'block2'
-    innerDiv.style.background = 'red'
-    innerDiv.style.marginLeft = `${block[0]}px`
-    innerDiv.style.marginTop = `${block[1]}px`
-    div.appendChild(innerDiv)
-}
-
