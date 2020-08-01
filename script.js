@@ -46,7 +46,7 @@ const getRandomFruit = () => {
     for(let i = 0; i < 10; i++) {
         const x = randomInteger(0, (MAP_X / FIGURE_X) - 1) * FIGURE_X
         const y = randomInteger(0, (MAP_Y / FIGURE_Y) - 1) * FIGURE_Y
-        if (!snake.includes([x, y]))
+        if (snake.filter(val => val[0] == x && val[1] == y).length == 0) {
             fruit = [x, y]
             const innerDiv = document.createElement('div')
             innerDiv.className = 'block2'
@@ -56,8 +56,9 @@ const getRandomFruit = () => {
             innerDiv.style.marginTop = `${y}px`
             div.appendChild(innerDiv)
             return
+        }
     }
-    align('Ты выиграл!')
+    alert('You won!')
     document.location.reload(true)
 }
 
