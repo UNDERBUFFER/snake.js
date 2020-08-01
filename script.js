@@ -7,6 +7,7 @@ const FIGURE_Y = 20
 
 const div = document.getElementById('block1')
 let snake = []
+let fruit = []
 let direction = 'ArrowRight'
 
 const randomInteger = (min, max) => {
@@ -17,7 +18,8 @@ const randomInteger = (min, max) => {
 const paint = () => {
     const oldElements = document.getElementsByClassName('block2')
     for (let element of oldElements) {
-        // todo: добавить исключение для будущего фрукта
+        if (element.id == 'fruit')
+            continue
         div.removeChild(element)
     }
 
@@ -29,6 +31,34 @@ const paint = () => {
         innerDiv.style.marginTop = `${block[1]}px`
         div.appendChild(innerDiv)
     }
+}
+
+const shedule = () => {
+    setTimeout(() => {
+        document.dispatchEvent(new KeyboardEvent('keydown', {'key': direction}))
+        shedule()
+    }, 100)
+}
+
+const getRandomFruit = () => {
+    if (fruit.length != 0)
+        div.removeChild(document.getElementById('fruit'))
+    for(let i = 0; i < 10; i++) {
+        const x = randomInteger(0, (MAP_X / FIGURE_X) - 1) * FIGURE_X
+        const y = randomInteger(0, (MAP_Y / FIGURE_Y) - 1) * FIGURE_Y
+        if (!snake.includes([x, y]))
+            fruit = [x, y]
+            const innerDiv = document.createElement('div')
+            innerDiv.className = 'block2'
+            innerDiv.id = 'fruit'
+            innerDiv.style.background = 'red'
+            innerDiv.style.marginLeft = `${x}px`
+            innerDiv.style.marginTop = `${y}px`
+            div.appendChild(innerDiv)
+            return
+    }
+    align('Ты выиграл!')
+    document.location.reload(true)
 }
 
 const move = (event) => {
@@ -61,7 +91,15 @@ const move = (event) => {
             break;
     }
     snake = snake.rotate()
-    snake[0] = [x, y]
+    if (x == fruit[0] && y == fruit[1]) {
+        let newSnake = [[x, y]]
+        newSnake.push(...snake)
+        snake = newSnake
+        getRandomFruit()
+    }
+    else {
+        snake[0] = [x, y]
+    }
 }
 
 Array.prototype.rotate = function() {
@@ -78,18 +116,11 @@ snake.push([x, y])
 for (let val = 1; val <= 4; val++)
     snake.push([snake[val - 1][0] - 20, y])
 
-
 document.addEventListener('keydown', (event) => {
     move(event)
     paint()
 })
 
-const shedule = () => {
-    setTimeout(() => {
-        document.dispatchEvent(new KeyboardEvent('keydown', {'key': direction}))
-        shedule()
-    }, 100)
-}
-
+getRandomFruit()
 shedule()
 
