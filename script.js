@@ -10,10 +10,12 @@ let snake = []
 let fruit = []
 let direction = 'ArrowRight'
 
+
 const randomInteger = (min, max) => {
     const rand = min - 0.5 + Math.random() * (max - min + 1);
     return Math.round(rand);
 }
+
 
 const paint = () => {
     const oldElements = document.getElementsByClassName('block2')
@@ -33,6 +35,7 @@ const paint = () => {
     }
 }
 
+
 const shedule = () => {
     setTimeout(() => {
         document.dispatchEvent(new KeyboardEvent('keydown', {'key': direction}))
@@ -40,12 +43,15 @@ const shedule = () => {
     }, 100)
 }
 
+
 const getRandomFruit = () => {
     if (fruit.length != 0)
         div.removeChild(document.getElementById('fruit'))
+
     for(let i = 0; i < 10; i++) {
         const x = randomInteger(0, (MAP_X / FIGURE_X) - 1) * FIGURE_X
         const y = randomInteger(0, (MAP_Y / FIGURE_Y) - 1) * FIGURE_Y
+
         if (snake.filter(val => val[0] == x && val[1] == y).length == 0) {
             fruit = [x, y]
             const innerDiv = document.createElement('div')
@@ -58,13 +64,16 @@ const getRandomFruit = () => {
             return
         }
     }
+
     alert('You won!')
     document.location.reload(true)
 }
 
+
 const move = (event) => {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key))
         direction = event.key
+
     switch (event.key) {
         case 'ArrowUp':
             if ((y - FIGURE_Y) < 0)
@@ -91,7 +100,9 @@ const move = (event) => {
                 x += FIGURE_X
             break;
     }
+
     snake = snake.rotate()
+
     if (x == fruit[0] && y == fruit[1]) {
         let newSnake = [[x, y]]
         newSnake.push(...snake)
@@ -102,6 +113,7 @@ const move = (event) => {
         snake[0] = [x, y]
     }
 }
+
 
 Array.prototype.rotate = function() {
     let res = this.slice(1)
@@ -124,4 +136,3 @@ document.addEventListener('keydown', (event) => {
 
 getRandomFruit()
 shedule()
-
