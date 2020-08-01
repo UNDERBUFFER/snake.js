@@ -2,11 +2,12 @@
 'use strict';
 const MAP_X = 560
 const MAP_Y = 320
-const FIGURE_X = 40
-const FIGURE_Y = 40
+const FIGURE_X = 20
+const FIGURE_Y = 20
 
 const div = document.getElementById('block1')
 let snake = []
+let direction = 'ArrowRight'
 
 const randomInteger = (min, max) => {
     const rand = min - 0.5 + Math.random() * (max - min + 1);
@@ -14,7 +15,6 @@ const randomInteger = (min, max) => {
 }
 
 const paint = () => {
-    console.log(snake)
     const oldElements = document.getElementsByClassName('block2')
     for (let element of oldElements) {
         // todo: добавить исключение для будущего фрукта
@@ -24,27 +24,16 @@ const paint = () => {
     for (let block of snake) {
         const innerDiv = document.createElement('div')
         innerDiv.className = 'block2'
-        innerDiv.style.background = 'red'
+        innerDiv.style.background = 'green'
         innerDiv.style.marginLeft = `${block[0]}px`
         innerDiv.style.marginTop = `${block[1]}px`
         div.appendChild(innerDiv)
     }
 }
 
-Array.prototype.rotate = function() {
-    let res = this.slice(1)
-    res.push(...this.slice(0, 1))
-    return res
-}
-
-// получение стартовой позиции:
-let x = randomInteger(0, (MAP_X / FIGURE_X) - 1) * 40
-let y = randomInteger(0, (MAP_Y / FIGURE_Y) - 1) * 40
-
-snake.push([x, y])
-
-document.addEventListener('keydown', (event) => {
-    // определение зажатой клавиши:
+const move = (event) => {
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key))
+        direction = event.key
     switch (event.key) {
         case 'ArrowUp':
             if ((y - FIGURE_Y) < 0)
@@ -73,12 +62,34 @@ document.addEventListener('keydown', (event) => {
     }
     snake = snake.rotate()
     snake[0] = [x, y]
-    // console.log(snake[0])
+}
+
+Array.prototype.rotate = function() {
+    let res = this.slice(1)
+    res.push(...this.slice(0, 1))
+    return res
+}
+
+
+let x = randomInteger(0, (MAP_X / FIGURE_X) - 1) * FIGURE_X
+let y = randomInteger(0, (MAP_Y / FIGURE_Y) - 1) * FIGURE_Y
+
+snake.push([x, y])
+for (let val = 1; val <= 4; val++)
+    snake.push([snake[val - 1][0] - 20, y])
+
+
+document.addEventListener('keydown', (event) => {
+    move(event)
     paint()
 })
 
-paint()
+const shedule = () => {
+    setTimeout(() => {
+        document.dispatchEvent(new KeyboardEvent('keydown', {'key': direction}))
+        shedule()
+    }, 100)
+}
 
-snake.push([x + 40, y])
+shedule()
 
-paint()
