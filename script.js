@@ -76,3 +76,9 @@ document.addEventListener('keydown', (event) => {
     // console.log(snake[0])
     paint()
 })
+
+paint()
+
+snake.push([x + 40, y])
+
+paint()
